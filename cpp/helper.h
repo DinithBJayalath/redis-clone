@@ -1,15 +1,8 @@
 #include <cstdio>
 #include <cstdlib>
-
-struct sockaddr_in {
-    uint16_t sin_family;
-    uint16_t sin_port;
-    struct in_addr sin_addr;
-};
-
-struct in_addr {
-    uint32_t s_addr;
-};
+#include <netinet/in.h>
+#include <arpa/inet.h>
+#include <sys/socket.h>
 
 void die(const char *msg) {
     perror(msg);        // Prints "listen(): <description of errno>" to stderr
@@ -18,5 +11,4 @@ void die(const char *msg) {
 
 void msg(const char *msg) {
     std::cout << msg << std::endl;
-    return;
 }
