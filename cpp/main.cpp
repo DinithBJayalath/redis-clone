@@ -3,16 +3,6 @@
 #include <sys/socket.h>
 #include <unistd.h>
 
-struct sockaddr_in {
-    uint16_t sin_family;
-    uint16_t sin_port;
-    struct in_addr sin_addr;
-};
-
-struct in_addr {
-    uint32_t s_addr;
-};
-
 
 int main(int argc, char* argv[]) {
     int server_fd = socket(AF_INET, SOCK_STREAM, 0);
