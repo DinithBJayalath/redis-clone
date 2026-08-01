@@ -16,7 +16,6 @@ void msg(const char *msg) {
     std::cout << msg << std::endl;
 }
 
-
 static int32_t read_all(int fd, char *buf, size_t n) {
     while (n > 0) {
         ssize_t rv = read(fd, buf, n);
