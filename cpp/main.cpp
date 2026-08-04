@@ -20,14 +20,6 @@ static void fd_set_nb(int fd) {
     fcntl(fd, F_SETFL, fcntl(fd, F_GETFL, 0) | O_NONBLOCK);
 }
 
-static void buf_append(std::vector<uint8_t> &buf, const uint8_t *data, size_t len) {
-    buf.insert(buf.end(), data, data+len);
-}
-
-static void buf_consume(std::vector<uint8_t> &buf, size_t len) {
-    buf.erase(buf.begin(), buf.begin() + len);
-}
-
 static bool try_one_request(Conn *conn) {
     if (conn->incoming.size() < 4) {
         return false;
@@ -68,16 +60,20 @@ static void handle_read(Conn *conn) {
         return;
     }
     buf_append(conn->incoming, buf, (size_t)buf);
-    try_one_request(conn);
+    while (try_one_request(conn)) {}
     if (conn->outgoing.size() > 0) {
         conn->want_read = false;
         conn->want_write = true;
+        return handle_write(conn);
     }
 }
 
 static void handle_write(Conn *conn) {
     assert(conn->outgoing.size() > 0);
     int rv = write(conn->fd, conn->outgoing.data(), conn->outgoing.size());
+    if (rv < 0 && errno == EAGAIN) {
+        return;
+    }
     if (rv < 0) {
         conn->want_close = true;
         return;
