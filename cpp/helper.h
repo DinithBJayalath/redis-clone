@@ -16,6 +16,14 @@ void msg(const char *msg) {
     std::cout << msg << std::endl;
 }
 
+static void buf_append(std::vector<uint8_t> &buf, const uint8_t *data, size_t len) {
+    buf.insert(buf.end(), data, data+len);
+}
+
+static void buf_consume(std::vector<uint8_t> &buf, size_t len) {
+    buf.erase(buf.begin(), buf.begin() + len);
+}
+
 static int32_t read_all(int fd, char *buf, size_t n) {
     while (n > 0) {
         ssize_t rv = read(fd, buf, n);
